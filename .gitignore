@@ -151,6 +151,7 @@ vite.config.ts.timestamp-*
 # Generated assets and personal data
 public/mediapipe/
 public/worker/
+public/licenses/
 public/web-demuxer.wasm
 *.mp4
 *.mov

@@ -9,6 +9,15 @@ const require = createRequire(import.meta.url);
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const target = resolve(root, 'public/mediapipe');
 await mkdir(target, { recursive: true });
+const licenseDirectory = resolve(root, 'public/licenses');
+await mkdir(licenseDirectory, { recursive: true });
+const notices = [await readFile(resolve(root, 'THIRD_PARTY_NOTICES.md'), 'utf8'), await readFile(resolve(root, 'src/vendor/workoutvision/LICENSE'), 'utf8')];
+for (const dependency of ['react', 'react-dom', 'web-demuxer']) {
+  const license = await readFile(resolve(root, 'node_modules', dependency, 'LICENSE'), 'utf8');
+  notices.push(`\n## ${dependency}\n\n${license}`);
+}
+notices.push(`\n## MediaPipe (Apache-2.0)\n\n${await readFile(resolve(root, 'src/vendor/mediapipe/LICENSE'), 'utf8')}`);
+await writeFile(resolve(licenseDirectory, 'THIRD_PARTY_NOTICES.txt'), notices.join('\n\n'));
 const vision = dirname(require.resolve('@mediapipe/tasks-vision'));
 await cp(resolve(vision, 'wasm'), resolve(target, 'wasm'), { recursive: true });
 await cp(resolve(root, 'node_modules/web-demuxer/dist/wasm-files/web-demuxer.wasm'), resolve(root, 'public/web-demuxer.wasm'));
