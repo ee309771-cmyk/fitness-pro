@@ -71,7 +71,7 @@ export function VideoReview({ report, file, time, onTime, seekTo, compact = fals
   }, [playing,url,speed,report.metadata.duration,onTime]);
   return <div className={compact ? 'review compact' : 'review'}>
     <div className="video-stage" style={{ aspectRatio: `${report.metadata.width}/${report.metadata.height}`, maxWidth: `${(compact ? 300 : 560) * report.metadata.width / report.metadata.height}px` }}>
-      {url ? <video ref={video} src={url} playsInline controls muted preload="metadata" onTimeUpdate={e => onTime(e.currentTarget.currentTime)} onError={() => {setPlaying(false);setPlaybackError(true);}} /> : <div className="synthetic-bg"><span>{report.metadata.source === 'synthetic' ? '合成动作示意 · 非实拍视频' : '骨架回放 · 此记录未保存原视频'}</span><div className="bench-line" /></div>}
+      {url ? <video ref={video} src={url} playsInline controls muted preload="metadata" onTimeUpdate={e => onTime(e.currentTarget.currentTime)} onError={() => {setPlaying(false);setPlaybackError(true);}} /> : <div className="synthetic-bg"><span>{report.metadata.source === 'synthetic' ? '合成动作示意 · 非实拍视频' : '骨架回放 · 此记录未保存原视频'}</span>{!['push_up','machine_chest_press'].includes(report.exercise)&&<div className="bench-line" />}</div>}
       <Skeleton report={report} time={time} />
       <span className="stage-label">{report.side === 'left' ? '左侧' : '右侧'}关节 · {time.toFixed(1)} s</span>
     </div>
