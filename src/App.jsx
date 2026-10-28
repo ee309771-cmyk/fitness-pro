@@ -1,0 +1,2 @@
+import React from 'react';
+export default function App(){return <main className="shell"><header className="topbar"><a className="brand" href="#">FP<span>FITNESS PRO</span></a><span className="privacy">视频仅在本机处理</span></header><section className="hero"><span className="eyebrow">看清每一次动作</span><h1>把训练，<br/>练得更明白。</h1><p>从一组侧拍卧推开始。录制、关节回放、参考对比与逐次复盘正在分模块接入。</p><span className="pill">卧推 · 首版开发中</span></section></main>;}

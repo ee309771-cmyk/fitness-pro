@@ -147,3 +147,14 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Generated assets and personal data
+public/mediapipe/
+public/web-demuxer.wasm
+*.mp4
+*.mov
+*.webm
+*.heic
+validation-private/
+playwright-report/
+test-results/
