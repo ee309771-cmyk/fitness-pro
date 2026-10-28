@@ -83,6 +83,7 @@ export function repFromBounds(frames, start, bottom, end, source = 'automatic') 
     pause: valid ? Math.max(0, slice[right].time - slice[left].time) : null,
     concentric: valid ? Math.max(0, end - slice[right].time) : null,
     duration: end - start,
+    bodyLine: valid && slice.filter(f=>Number.isFinite(f.bodyLine)).length / Math.max(1,slice.length) >= BENCH_CONFIG.minCoverage ? median(slice.map(f=>f.bodyLine)) : null,
   };
 }
 

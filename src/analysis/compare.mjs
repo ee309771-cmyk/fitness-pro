@@ -12,6 +12,7 @@ function phasePoints(report, start, end) {
 }
 
 export function compareRep(report, rep, reference, referenceRep) {
+  if((report.exercise??'bench_press')!==(reference.exercise??'bench_press'))return{status:'unavailable',reason:'动作类型不同，请导入相同动作的参考示范'};
   if (reference.metadata.source === 'synthetic' && report.metadata.source !== 'synthetic') return { status:'unavailable', reason:'合成示意不能作为实拍对比参考，请导入真实示范' };
   if (!rep?.valid || !referenceRep?.valid) return { status: 'unavailable', reason: '这次动作的关键关节不够清晰' };
   const mapping = [], differences = [];
