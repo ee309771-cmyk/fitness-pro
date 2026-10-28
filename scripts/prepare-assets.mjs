@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { build } from 'vite';
 
 const require = createRequire(import.meta.url);
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -25,3 +26,13 @@ const bytes = await readFile(modelPath);
 const hash = createHash('sha256').update(bytes).digest('hex');
 if (hash !== '5134a3aad27a58b93da0088d431f366da362b44e3ccfbe3462b3827a839011b1') throw new Error(`Pose model SHA256 mismatch: ${hash}`);
 console.log(`Pose model ready (${bytes.length} bytes, SHA256 ${hash}).`);
+// MediaPipe 0.10.35 loads its WASM factory with importScripts. It needs a
+// classic worker; a module worker can fail with "ModuleFactory not set".
+await build({
+  configFile: false, publicDir: false, logLevel: 'warn',
+  build: {
+    lib: { entry: resolve(root, 'src/workers/pose.worker.js'), formats: ['iife'], name: 'FitnessPoseWorker', fileName: () => 'pose-worker.js' },
+    outDir: resolve(root, 'public/worker'), emptyOutDir: true, copyPublicDir: false,
+  },
+});
+console.log('Classic pose worker ready.');

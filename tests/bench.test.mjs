@@ -10,6 +10,7 @@ test('side-view cycle detection counts four complete synthetic bench reps', () =
   assert.equal(report.side, 'left');
   assert.equal(report.coverage, 1);
   assert.ok(report.reps.every(r => r.valid && r.range > 60 && r.pause > 0));
+  assert.ok(report.reps.every(r => r.duration < 3.3), 'lockout rest must not inflate the next rep duration');
 });
 test('a long landmark loss does not join two half reps into a full rep', () => {
   const { samples, metadata } = createDemo({ reps: 1 });

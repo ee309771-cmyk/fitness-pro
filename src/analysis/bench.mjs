@@ -97,7 +97,7 @@ export function detectReps(frames) {
   // the visible elbow projection changes during the set.
   const topGate = percentile(values, 0.6);
   const excursion = BENCH_CONFIG.minExcursion;
-  let anchor = null, active = null, previousTime = null, peak = null;
+  let anchor = null, active = null, previousTime = null, peak = null, lastTop = null;
   const reps = [];
   const finish = () => {
     if (!active || !peak) return;
@@ -111,7 +111,7 @@ export function detectReps(frames) {
   };
   for (const frame of frames) {
     if (!frame.visible) continue;
-    if (previousTime != null && frame.time - previousTime > BENCH_CONFIG.maxGapSeconds) { anchor = null; active = null; peak = null; }
+    if (previousTime != null && frame.time - previousTime > BENCH_CONFIG.maxGapSeconds) { anchor = null; active = null; peak = null; lastTop = null; }
     previousTime = frame.time;
     if (!active) {
       if (!anchor && frame.smooth >= topGate) anchor = frame;
@@ -121,11 +121,12 @@ export function detectReps(frames) {
     }
     if (!peak) {
       if (frame.smooth < active.bottom.smooth) active.bottom = frame;
-      if (frame.smooth - active.bottom.smooth >= excursion) peak = frame;
-    } else if (frame.smooth > peak.smooth + 0.1) peak = frame;
+      if (frame.smooth - active.bottom.smooth >= excursion) { peak = frame; lastTop = frame; }
+    } else if (frame.smooth > peak.smooth + 0.1) { peak = frame; lastTop = frame; }
+    else if (frame.smooth >= peak.smooth - 3) lastTop = frame;
     else if (peak.smooth - frame.smooth >= excursion) {
       finish();
-      active = { start: peak, bottom: frame }; anchor = peak; peak = null;
+      active = { start: lastTop ?? peak, bottom: frame }; anchor = lastTop ?? peak; peak = null; lastTop = null;
     }
   }
   finish();
